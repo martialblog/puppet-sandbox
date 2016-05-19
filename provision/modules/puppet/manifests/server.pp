@@ -95,8 +95,8 @@ class puppet::server(
   }
 
   service { 'puppetmaster':
-    enable => true,
     ensure => running,
+    enable => true,
   }
 
 }
