@@ -17,6 +17,8 @@ class puppet::params {
   $client_ensure = 'latest'
   $server_ensure = 'latest'
 
+  $client_package_name = 'puppet'
+
   case $::osfamily {
     'redhat': {
       $server_package_name = 'puppet-server'

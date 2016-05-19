@@ -25,7 +25,9 @@
 #   }
 #
 class puppet(
-  $ensure = $puppet::params::client_ensure
+  $ensure = $puppet::params::client_ensure,
+  $package_name = $puppet::params::client_package_name,
+  $service_name = 'puppet',
 ) inherits puppet::params {
 
   if $osfamily == 'debian' and $ensure != 'latest' {
@@ -34,7 +36,7 @@ class puppet(
     }
   }
 
-  package { 'puppet':
+  package { $package_name:
     ensure => $ensure,
   }
 
@@ -42,22 +44,22 @@ class puppet(
   exec { 'start_puppet':
     command => '/bin/sed -i /etc/default/puppet -e "s/START=no/START=yes/"',
     onlyif  => '/usr/bin/test -f /etc/default/puppet',
-    require => Package[ 'puppet' ],
-    before  => Service[ 'puppet' ],
+    require => Package[ $package_name ],
+    before  => Service[ $service_name ],
   }
 
   # templatedir is deprecated
   exec { 'remove_templatedir_setting':
     command => '/bin/sed -i /etc/puppet/puppet.conf -e "/templatedir=/d"',
     onlyif  => '/bin/grep templatedir /etc/puppet/puppet.conf',
-    require => Package[ 'puppet' ],
-    before  => Service[ 'puppet' ],
+    require => Package[ $package_name ],
+    before  => Service[ $service_name ],
   }
 
-  service { 'puppet':
+  service { $service_name:
     ensure  => running,
     enable  => true,
-    require => Package[ 'puppet' ],
+    require => Package[ $package_name ],
   }
 
 }
