@@ -33,17 +33,18 @@
 #
 class puppet::server(
   $ensure       = $puppet::params::server_ensure,
-  $package_name = $puppet::params::server_package_name
+  $package_name = $puppet::params::server_package_name,
+  $service_name = 'puppetmaster',
 ) inherits puppet::params {
 
   # required to prevent syslog error on ubuntu
   # https://bugs.launchpad.net/ubuntu/+source/puppet/+bug/564861
   file { [ '/etc/puppet', '/etc/puppet/files' ]:
     ensure => directory,
-    before => Package[ 'puppetmaster' ],
+    before => Package[ $package_name ],
   }
 
-  package { 'puppetmaster':
+  package { $package_name:
     ensure => $ensure,
     name   => $package_name,
   }
@@ -59,8 +60,8 @@ class puppet::server(
     group   => 'puppet',
     mode    => '0644',
     source  => 'puppet:///modules/puppet/puppet.conf',
-    require => Package[ 'puppetmaster' ],
-    notify  => Service[ 'puppetmaster' ],
+    require => Package[ $package_name ],
+    notify  => Service[ $service_name ],
   }
 
   file { 'site.pp':
@@ -69,7 +70,7 @@ class puppet::server(
     group   => 'puppet',
     mode    => '0644',
     source  => 'puppet:///modules/puppet/site.pp',
-    require => Package[ 'puppetmaster' ],
+    require => Package[ $package_name ],
   }
 
   file { 'autosign.conf':
@@ -78,13 +79,13 @@ class puppet::server(
     group   => 'puppet',
     mode    => '0644',
     content => '*',
-    require => Package[ 'puppetmaster' ],
+    require => Package[ $package_name ],
   }
 
   file { '/etc/puppet/manifests/nodes.pp':
     ensure  => link,
     target  => '/vagrant/nodes.pp',
-    require => Package[ 'puppetmaster' ],
+    require => Package[ $package_name ],
   }
 
   # initialize a template file then ignore
@@ -94,7 +95,7 @@ class puppet::server(
     source  => 'puppet:///modules/puppet/nodes.pp',
   }
 
-  service { 'puppetmaster':
+  service { $service_name:
     ensure => running,
     enable => true,
   }
