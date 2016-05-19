@@ -27,7 +27,7 @@
 class puppet(
   $ensure = $puppet::params::client_ensure,
   $package_name = $puppet::params::client_package_name,
-  $service_name = 'puppet',
+  $service_name = $puppet::params::client_service_name,
 ) inherits puppet::params {
 
   if $osfamily == 'debian' and $ensure != 'latest' {

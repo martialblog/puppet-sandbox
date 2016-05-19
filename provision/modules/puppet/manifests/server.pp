@@ -34,7 +34,7 @@
 class puppet::server(
   $ensure       = $puppet::params::server_ensure,
   $package_name = $puppet::params::server_package_name,
-  $service_name = 'puppetmaster',
+  $service_name = $puppet::params::server_service_name,
 ) inherits puppet::params {
 
   # required to prevent syslog error on ubuntu
