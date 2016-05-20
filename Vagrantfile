@@ -3,7 +3,7 @@
 
 domain = 'example.com'
 box = 'ubuntu/trusty64'
-ram = 512
+ram = 2304
 
 puppet_nodes = [
   {:hostname => 'puppet',  :ip => '172.16.32.10', :box => box, :fwdhost => 8140, :fwdguest => 8140, :ram => ram},
