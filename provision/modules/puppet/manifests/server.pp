@@ -61,41 +61,39 @@ class puppet::server(
     before  => Service[ $service_name ],
   }
 
-  # TODO Place these files in the right places.
-  #
-  # file { 'puppet.conf':
-  #   path    => '/etc/puppet/puppet.conf',
-  #   owner   => 'puppet',
-  #   group   => 'puppet',
-  #   mode    => '0644',
-  #   source  => 'puppet:///modules/puppet/puppet.conf',
-  #   require => Package[ $package_name ],
-  #   notify  => Service[ $service_name ],
-  # }
+  file { 'puppet.conf':
+    path    => '/etc/puppetlabs/puppet/puppet.conf',
+    owner   => 'puppet',
+    group   => 'puppet',
+    mode    => '0644',
+    source  => 'puppet:///modules/puppet/puppet.conf',
+    require => Package[ $package_name ],
+    notify  => Service[ $service_name ],
+  }
 
-  # file { 'site.pp':
-  #   path    => '/etc/puppet/manifests/site.pp',
-  #   owner   => 'puppet',
-  #   group   => 'puppet',
-  #   mode    => '0644',
-  #   source  => 'puppet:///modules/puppet/site.pp',
-  #   require => Package[ $package_name ],
-  # }
+file { 'site.pp':
+    path    => '/etc/puppetlabs/code/environments/production/manifests/site.pp',
+    owner   => 'puppet',
+    group   => 'puppet',
+    mode    => '0644',
+    source  => 'puppet:///modules/puppet/site.pp',
+    require => Package[ $package_name ],
+  }
 
-  # file { 'autosign.conf':
-  #   path    => '/etc/puppet/autosign.conf',
-  #   owner   => 'puppet',
-  #   group   => 'puppet',
-  #   mode    => '0644',
-  #   content => '*',
-  #   require => Package[ $package_name ],
-  # }
+  file { 'autosign.conf':
+    path    => '/etc/puppet/autosign.conf',
+    owner   => 'puppet',
+    group   => 'puppet',
+    mode    => '0644',
+    content => '*',
+    require => Package[ $package_name ],
+  }
 
-  # file { '/etc/puppet/manifests/nodes.pp':
-  #   ensure  => link,
-  #   target  => '/vagrant/nodes.pp',
-  #   require => Package[ $package_name ],
-  # }
+  file { '/etc/puppetlabs/code/environments/production/manifests/nodes.pp':
+    ensure  => link,
+    target  => '/vagrant/nodes.pp',
+    require => Package[ $package_name ],
+  }
 
   # initialize a template file then ignore
   file { '/vagrant/nodes.pp':
@@ -105,8 +103,8 @@ class puppet::server(
   }
 
   service { $service_name:
-    ensure => running,
-    enable => true,
+    ensure  => running,
+    enable  => true,
     require => Package[ $package_name ],
   }
 

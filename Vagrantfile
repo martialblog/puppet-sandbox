@@ -33,6 +33,7 @@ Vagrant.configure("2") do |config|
       end
 
       node_config.vm.provision :puppet do |puppet|
+        puppet.options = '--fileserverconfig /vagrant/fileserver.conf'
         puppet.manifests_path = 'provision/manifests'
         puppet.module_path = 'provision/modules'
       end
